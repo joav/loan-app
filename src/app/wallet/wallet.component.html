@@ -1,20 +1,38 @@
 <div>
 	<h1>Caja</h1>
-	<p>Total: <strong><span class="sign money">1.000.000</span></strong></p>
-	<button routerLink="/transaction">movimiento</button>
-	<div class="row">
-		<span class="name">Jimmy Acero</span>
-		<span class="money"> 1.000.000</span>
-		<small>23-oct-2020</small>
-	</div>
-	<div class="row">
-		<span class="name">Jimmy Acero</span>
-		<span class="money sign"> 1.000.000</span>
-		<small>23-oct-2020</small>
-	</div>
-	<div class="row">
-		<span class="name">Jimmy Acero</span>
-		<span class="money"> 1.000.000</span>
-		<small>23-oct-2020</small>
+	<p>Fondos: <strong><span class="money">{{funds | currency}}</span></strong></p>
+	<p>Prestado: <strong><span class="money sign"> {{borrowed | currency}}</span></strong></p>
+	<p>Interes: <strong><span class="money">{{gain | currency}}</span></strong></p>
+	<button mat-raised-button color="primary" routerLink="/transaction">movimiento</button>
+	<div class="container">
+		<ng-scrollbar>
+			<mat-accordion>
+				<mat-expansion-panel [closed]="true" hideToggle *ngFor="let transaction of loanService.transactions">
+					<mat-expansion-panel-header>
+						<div class="row">
+							<span class="name">{{transaction.who}}</span>
+							<span class="money" [class.sign]="transaction.type === 'Prestamo'">{{transaction.value | currency}}</span>
+							<small>{{transaction.date}}</small>
+						</div>
+					</mat-expansion-panel-header>
+					<div class="data">
+						<div class="column">
+							<p><span class="type">{{transaction.type}}</span><span *ngIf="transaction.loanId" class="id"> Id: #{{transaction.loanId.padStart(3, '0')}}</span></p>
+							<p *ngIf="transaction.concept != ''">{{transaction.concept}}</p>
+							<ng-container *ngIf="transaction.type === 'Prestamo'">
+								<p><span>Interés:</span> <span>{{transaction.loanValue | currency}}</span></p>
+								<p><span>% Interés:</span> <span>{{transaction.loanPercentage}}%</span></p>
+							</ng-container>
+						</div>
+						<div class="column">
+							<ng-container *ngIf="transaction.type === 'Prestamo'">
+								<p><span>Desde:</span> <span>{{transaction.loanInit}}</span></p>
+								<p *ngIf="transaction.loanDuration && transaction.loanDuration != ''" class="final"><span>Hasta: </span> <span [innerHTML]="loanFinal(transaction).replace(' ', '<br>')"></span></p>
+							</ng-container>
+						</div>
+					</div>
+				</mat-expansion-panel>
+			</mat-accordion>
+		</ng-scrollbar>
 	</div>
 </div>

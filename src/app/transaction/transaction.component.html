@@ -1,22 +1,96 @@
 <div>
 	<h1>Movimiento</h1>
-	<p><input placeholder="Quien" required></p>
-	<p><input placeholder="Valor" required></p>
-	<p><input placeholder="Concepto"></p>
-	<p><input type="date" placeholder="Fecha"></p>
-	<p>
-		<select placeholder="Tipo">
-			<option value="Directo">Directo</option>
-			<option value="Interes">Interes</option>
-			<option value="Prestamo">Prestamo</option>
-			<option value="Capital">Capital</option>
-		</select>
-	</p>
-	<p><input placeholder="Id"></p>
-	<p><input type="date" placeholder="Desde cuando"></p>
-	<p><input placeholder="Por cuanto tiempo"></p>
-	<p><input placeholder="% Interés"></p>
-	<p><input placeholder="Valor del interés"></p>
-	<p><input type="checkbox" name="closed" id="closed"><label for="closed">Cerrado</label></p>
-	<button>guardar</button>
+	<form (ngSubmit)="submit()" [formGroup]="form">
+		<p>
+			<mat-form-field>
+				<input formControlName="who" matInput placeholder="Quien" required [matAutocomplete]="autoWho">
+				<mat-autocomplete #autoWho="matAutocomplete">
+					<mat-option *ngFor="let person of filteredPersons | async" [value]="person">
+						{{person}}
+					</mat-option>
+				</mat-autocomplete>
+				<mat-error *ngIf="who.hasError('required')">Este campo es requerido</mat-error>
+			</mat-form-field>
+		</p>
+		<p>
+			<mat-form-field>
+				<span matPrefix>$ &nbsp;</span>
+				<input formControlName="value" matInput placeholder="Valor" required type="tel">
+				<mat-error *ngIf="value.hasError('required')">Este campo es requerido</mat-error>
+				<mat-error *ngIf="value.hasError('pattern')">Debe ser un número válido mayor a 0</mat-error>
+			</mat-form-field>
+		</p>
+		<p>
+			<mat-form-field>
+				<input formControlName="concept" matInput placeholder="Concepto">
+			</mat-form-field>
+		</p>
+		<p>
+			<mat-form-field>
+				<input formControlName="date" matInput [matDatepicker]="transactionDate" (click)="transactionDate.open()" placeholder="Fecha">
+				<mat-datepicker-toggle matSuffix [for]="transactionDate"></mat-datepicker-toggle>
+				<mat-datepicker #transactionDate></mat-datepicker>
+				<mat-error *ngIf="date.hasError('required')">Este campo es requerido</mat-error>
+			</mat-form-field>
+		</p>
+		<p>
+			<mat-form-field>
+				<mat-label>Tipo</mat-label>
+				<mat-select formControlName="type" (selectionChange)="typeChange()">
+					<mat-option value="Directo">Directo</mat-option>
+					<mat-option value="Interes">Interes</mat-option>
+					<mat-option value="Prestamo">Prestamo</mat-option>
+					<mat-option value="Capital">Capital</mat-option>
+				</mat-select>
+				<mat-error *ngIf="type.hasError('required')">Este campo es requerido</mat-error>
+			</mat-form-field>
+		</p>
+		<ng-container *ngIf="isLoanType">
+			<p>
+				<mat-form-field>
+					<input formControlName="loanId" matInput placeholder="Id" [matAutocomplete]="autoLoan">
+					<mat-autocomplete #autoLoan="matAutocomplete">
+						<mat-option *ngFor="let loan of filteredLoans | async" [value]="loan">
+							{{loan}}
+						</mat-option>
+					</mat-autocomplete>
+					<mat-error *ngIf="loanId.hasError('required')">Este campo es requerido</mat-error>
+				</mat-form-field>
+			</p>
+			<ng-container *ngIf="isLoanTransaction">
+				<p>
+					<mat-form-field>
+						<input formControlName="loanInit" matInput [matDatepicker]="loanInitDate" (click)="loanInitDate.open()" placeholder="Desde cuando">
+						<mat-datepicker-toggle matSuffix [for]="loanInitDate"></mat-datepicker-toggle>
+						<mat-datepicker #loanInitDate></mat-datepicker>
+						<mat-error *ngIf="loanInit.hasError('required')">Este campo es requerido</mat-error>
+					</mat-form-field>
+				</p>
+				<p>
+					<mat-form-field>
+						<input formControlName="loanDuration" matInput placeholder="Por cuanto tiempo">
+						<mat-hint>Ejms: 1 día; 20 dias; 1 mes; 2 meses; 1 año; 4 años</mat-hint>
+						<mat-error *ngIf="loanDuration.hasError('pattern')">Debe ser similar a los ejemplos</mat-error>
+					</mat-form-field>
+				</p>
+				<p>
+					<mat-form-field class="percentage">
+						<input formControlName="loanPercentage" matInput placeholder="% Interés">
+						<mat-error *ngIf="loanPercentage.hasError('pattern')">Debe ser un porcentaje valido entre 0 y 100</mat-error>
+						<span matSuffix>%</span>
+					</mat-form-field>
+				</p>
+				<p>
+					<mat-form-field>
+						<span matPrefix>$ &nbsp;</span>
+						<input formControlName="loanValue" matInput placeholder="Valor del interés">
+						<mat-error *ngIf="loanValue.hasError('pattern')">Debe ser un número válido mayor a 0</mat-error>
+					</mat-form-field>
+				</p>
+			</ng-container>
+		</ng-container>
+		<div class="center">
+			<button mat-raised-button color="primary" type="submit">guardar</button>
+		</div>
+	</form>
 </div>

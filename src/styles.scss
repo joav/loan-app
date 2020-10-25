@@ -1,16 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 button{
 	text-transform: uppercase;
+	width: 300px;
 }
 
 .money {
-	&::before {
-		content: '$';
-	}
 	&.sign {
 		color: red;
 		&::before {
-			content: '- $';
+			content: '-';
 		}
 	}
 }
@@ -20,8 +18,9 @@ button{
 	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	padding: 5px;
-	border-bottom: 1px solid black;
+	width: 100%;
+	// padding: 5px;
+	// border-bottom: 1px solid black;
 	small{
 		display: block;
 		width: 100%;
@@ -34,7 +33,14 @@ button{
 	}
 }
 
-p input:not([type="checkbox"]), p select{
-	display: block;
+p .mat-form-field{
 	width: 100%;
 }
+
+.container {
+	height: 350px;
+	overflow: hidden;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
