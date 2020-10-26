@@ -46,7 +46,7 @@ export class LoanService {
 			person.interests = this._transactions.filter(t => t.type === 'Interes' && t.who === person.name).reduce(sumTransaction, 0);
 			const activeLoans = loans.filter(l => l.name === person.name && !l.closed);
 			person.capital = activeLoans.reduce((prev, curr) => prev + curr.capital, 0);
-			person.money = activeLoans.reduce((prev, curr) => prev + curr.value, 0);
+			person.money = activeLoans.reduce((prev, curr) => prev + curr.value, 0) - person.capital;
 			person.loans = loans.filter(l => l.name === person.name).length;
 		}
 		return Array.from(persons.values()).sort((a, b) => a.name === b.name?0:(a.name < b.name?-1:1));

@@ -1,9 +1,11 @@
 <div>
-	<h1>Caja</h1>
-	<p>Fondos: <strong><span class="money">{{funds | currency}}</span></strong></p>
-	<p>Prestado: <strong><span class="money sign"> {{borrowed | currency}}</span></strong></p>
-	<p>Interes: <strong><span class="money">{{gain | currency}}</span></strong></p>
-	<button mat-raised-button color="primary" routerLink="/transaction">movimiento</button>
+	<div class="header">
+		<h1>Caja</h1>
+		<p>Fondos: <strong><span class="money">{{funds | currency}}</span></strong></p>
+		<p>Prestado: <strong><span class="money" [class.sign]="borrowed > 0"> {{borrowed | currency}}</span></strong></p>
+		<p>Interes: <strong><span class="money">{{gain | currency}}</span></strong></p>
+		<button mat-raised-button color="primary" routerLink="/transaction">movimiento</button>
+	</div>
 	<div class="container">
 		<ng-scrollbar>
 			<mat-accordion>
@@ -20,14 +22,14 @@
 							<p><span class="type">{{transaction.type}}</span><span *ngIf="transaction.loanId" class="id"> Id: #{{transaction.loanId.padStart(3, '0')}}</span></p>
 							<p *ngIf="transaction.concept != ''">{{transaction.concept}}</p>
 							<ng-container *ngIf="transaction.type === 'Prestamo'">
-								<p><span>Interés:</span> <span>{{transaction.loanValue | currency}}</span></p>
-								<p><span>% Interés:</span> <span>{{transaction.loanPercentage}}%</span></p>
+								<p><span>Interés: </span> <span>{{transaction.loanValue | currency}}</span></p>
+								<p><span>% Interés: </span> <span>{{transaction.loanPercentage}}%</span></p>
 							</ng-container>
 						</div>
 						<div class="column">
 							<ng-container *ngIf="transaction.type === 'Prestamo'">
-								<p><span>Desde:</span> <span>{{transaction.loanInit}}</span></p>
-								<p *ngIf="transaction.loanDuration && transaction.loanDuration != ''" class="final"><span>Hasta: </span> <span [innerHTML]="loanFinal(transaction).replace(' ', '<br>')"></span></p>
+								<p><span>Desde: </span><span>{{transaction.loanInit}}</span></p>
+								<p *ngIf="transaction.loanDuration && transaction.loanDuration != ''" class="final"><span>Hasta: </span><span [innerHTML]="loanFinal(transaction).replace(' ', '<br>')"></span></p>
 							</ng-container>
 						</div>
 					</div>

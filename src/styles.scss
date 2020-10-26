@@ -33,6 +33,21 @@ button{
 	}
 }
 
+.data {
+	display: flex;
+	flex-direction: row;
+	.column {
+		width: 50%;
+		padding: 5px;
+		p {
+			margin-bottom: 3px;
+		}
+		.type {
+			font-size: 1.2em;
+		}
+	}
+}
+
 p .mat-form-field{
 	width: 100%;
 }
@@ -40,6 +55,14 @@ p .mat-form-field{
 .container {
 	height: 350px;
 	overflow: hidden;
+}
+
+.header {
+	padding: 5px;
+	border-bottom: 1px solid #333;
+	h1 {
+		text-align: center;
+	}
 }
 
 html, body { height: 100%; }

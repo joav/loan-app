@@ -145,6 +145,7 @@ export class TransactionComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+
 	}
 
 	submit() {
