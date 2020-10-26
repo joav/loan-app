@@ -10,15 +10,21 @@ import { MatExpansionModule } from "@angular/material/expansion";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
+import { CodeComponent, HomeComponent } from './home/home.component';
 import { WalletComponent } from './wallet/wallet.component';
 import { TransactionComponent } from './transaction/transaction.component';
 import { PersonsComponent } from './persons/persons.component';
 import { LoansComponent } from './loans/loans.component';
-import { NgScrollbarModule } from 'ngx-scrollbar';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -27,7 +33,8 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
     WalletComponent,
     TransactionComponent,
     PersonsComponent,
-    LoansComponent
+	LoansComponent,
+	CodeComponent
   ],
   imports: [
     BrowserModule,
@@ -43,9 +50,15 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
     MatFormFieldModule,
 	MatNativeDateModule,
 	MatAutocompleteModule,
-	NgScrollbarModule
+	MatSnackBarModule,
+	MatDialogModule,
+	NgScrollbarModule,
+	AngularFireModule.initializeApp(environment.firebase),
+	AngularFirestoreModule,
+	AngularFireAuthModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [CodeComponent]
 })
 export class AppModule { }

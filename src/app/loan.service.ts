@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Capital } from './models/capital';
 import { Interest } from './models/interest';
 import { Loan } from './models/loan';
@@ -6,7 +9,7 @@ import { loanFinalDate, LoanTransaction } from './models/loan-transaction';
 import { Person } from './models/person';
 
 import { Transaction } from "./models/transaction";
-import { getDate } from './utils';
+import { generateUID, getDate } from './utils';
 
 @Injectable({
 	providedIn: 'root'
@@ -15,7 +18,7 @@ export class LoanService {
 
 	private _transactions: Transaction[];
 
-	constructor() {
+	constructor(private firestore: AngularFirestore) {
 		this.load();
 	}
 
@@ -79,8 +82,66 @@ export class LoanService {
 		return Array.from(loans.values()).sort((a, b) => a.closed === b.closed?0:(a.closed?1:-1));
 	}
 
+	sync(){
+		return new Observable<string>(subs => {
+			let id = localStorage.getItem('syncId');
+			const syncData:any = {
+				updatedOn: new Date()
+			};
+			if(!id){
+				id = generateUID();
+			}
+			this.firestore.doc(`logs/${id}`).delete()
+			.then(() => {
+				this.firestore.doc(`logs/${id}`).set(syncData, {
+					merge: true
+				}).then(() => {
+					const batch = this.firestore.firestore.batch();
+					this._transactions.forEach((t, i) => {
+						batch.set(this.firestore.doc(`logs/${id}`).collection('transactions').doc("t-"+i.toString().padStart(this.transactions.length.toString().length + 1, "0")).ref, t);
+					});
+					batch.commit()
+					.then(() => {
+						localStorage.setItem('syncId', id);
+						subs.next(id);
+						subs.complete();
+					})
+					.catch(e => {
+						subs.error(e);
+						subs.complete();
+					});
+				})
+				.catch(e => {
+					subs.error(e);
+					subs.complete();
+				});
+			})
+			.catch(e => {
+				subs.error(e);
+				subs.complete();
+			});
+		});
+	}
+
+	getSync(code: string) {
+		return this.firestore.doc(`logs/${code.toLowerCase()}`).collection('transactions')
+		.get()
+		.pipe(
+			map(r => r.docs.map(d => ({...d.data()} as Transaction))),
+			map(r => {
+				localStorage.setItem('syncId', code.toLowerCase());
+				this._transactions = r;
+				this.save();
+			})
+		)
+	}
+
 	get transactions() {
 		return this._transactions;
+	}
+
+	get syncId(){
+		return localStorage.getItem('syncId');
 	}
 
 	private load() {
