@@ -1,14 +1,5 @@
 {
   "projects": {
     "default": "loans-app-e60f3"
-  },
-  "targets": {
-    "loans-app-e60f3": {
-      "hosting": {
-        "loan-app": [
-          "loans-app-e60f3"
-        ]
-      }
-    }
   }
 }

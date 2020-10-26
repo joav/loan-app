@@ -37,28 +37,36 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
-	syncCode() {
-		const dialogRef = this.dialog.open(CodeComponent, {
-			width: '450px',
-		});
+	syncCode(update = false) {
+		if(update) {
+			this.getTransactions(this.syncId);
+		}else{
+			const dialogRef = this.dialog.open(CodeComponent, {
+				width: '450px',
+			});
 
-		dialogRef.afterClosed().subscribe(result => {
-			if(result && result.length){
-				this.sync = true;
-				this.loanService.getSync(result)
-				.subscribe(()=>{
-					this.syncId = result;
-					this.sync = false;
-					this.snackbar.open("Sincronización finalizada", null, {
-						duration: 2000
-					});
-					this.hasData = true;
-				}, e => {
-					console.log(e);
-					this.syncId = null;
-					this.sync = false;
-				})
-			}
+			dialogRef.afterClosed().subscribe(result => {
+				if(result && result.length){
+					this.getTransactions(result);
+				}
+			});
+		}
+	}
+
+	private getTransactions(code: string) {
+		this.sync = true;
+		this.loanService.getSync(code)
+		.subscribe(()=>{
+			this.syncId = code;
+			this.sync = false;
+			this.snackbar.open("Sincronización finalizada", null, {
+				duration: 2000
+			});
+			this.hasData = true;
+		}, e => {
+			console.log(e);
+			this.syncId = null;
+			this.sync = false;
 		});
 	}
 

@@ -3,6 +3,7 @@
 	<button mat-raised-button color="primary" [disabled]="sync" routerLink="wallet">caja</button>
 	<button mat-raised-button color="primary" [disabled]="sync" routerLink="persons">personas</button>
 	<button mat-raised-button color="primary" [disabled]="sync" routerLink="loans">prestamos</button>
-	<button mat-raised-button color="primary" [disabled]="!hasData || sync" (click)="doSync()">sincronizar</button>
+	<button mat-raised-button color="primary" [disabled]="!hasData || sync" (click)="doSync()">a la nube</button>
+	<button mat-raised-button color="primary" [disabled]="!syncId || sync" (click)="syncCode(true)">actualizar</button>
 	<button mat-raised-button color="primary" [disabled]="sync" (click)="syncCode()">Tengo un código</button>
 </div>
